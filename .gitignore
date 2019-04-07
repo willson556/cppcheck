@@ -41,6 +41,9 @@ ipch/
 lib/temp/
 test/temp/
 
+# ReSharper Cache Files
+/_ReSharper.Caches/
+
 # XCode build folders and files
 *.mode[0-9]v[0-9]
 *.pbxuser
