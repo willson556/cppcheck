@@ -36,6 +36,16 @@ inline bool endsWith(const std::string &str, const char end[], std::size_t endle
     return (str.size() >= endlen) && (str.compare(str.size()-endlen, endlen, end)==0);
 }
 
+inline bool startsWith(const std::string &str, char c)
+{
+	return str[0] == c;
+}
+
+inline bool startsWith(const std::string &str, const char start[], std::size_t startlen)
+{
+	return (str.size() >= startlen) && (str.compare(0, startlen, start) == 0);
+}
+
 inline static const char *getOrdinalText(int i)
 {
     if (i == 1)

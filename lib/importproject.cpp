@@ -145,6 +145,11 @@ void ImportProject::FileSettings::setIncludePaths(const std::string &basepath, c
         if (it.compare(0,2,"%(")==0)
             continue;
         std::string s(Path::fromNativeSeparators(it));
+
+        if (startsWith(s, '\"') && endsWith(s, '\"')) {
+			s = s.substr(1, s.size() - 2);
+        }
+
         if (s[0] == '/' || (s.size() > 1U && s.compare(1,2,":/") == 0)) {
             if (!endsWith(s,'/'))
                 s += '/';

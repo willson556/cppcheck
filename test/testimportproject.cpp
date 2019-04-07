@@ -47,6 +47,7 @@ private:
         TEST_CASE(importCompileCommands2); // #8563
         TEST_CASE(importCompileCommands3); // check with existing trailing / in directory
         TEST_CASE(importCompileCommands4); // only accept certain file types
+		TEST_CASE(importCompileCommands5); // allow windows-style paths
         TEST_CASE(importCppcheckGuiProject);
     }
 
@@ -137,6 +138,24 @@ private:
         importer.importCompileCommands(istr);
         ASSERT_EQUALS(0, importer.fileSettings.size());
     }
+
+	void importCompileCommands5() const {
+		const char json[] = "[ { \"directory\": \"/tmp\","
+			"\"command\": \"gcc -I/tmp -I\\\"C:\\\\project\\\\include\\\" -DCFGDIR=\\\\\\\"/usr/local/share/Cppcheck\\\\\\\" -DTEST1 -DTEST2=2 -o /tmp/src.o -c /tmp/src.c\","
+			"\"file\": \"/tmp/src.c\" } ]";
+		std::istringstream istr(json);
+		TestImporter importer;
+		importer.importCompileCommands(istr);
+
+        ASSERT_EQUALS(1, importer.fileSettings.size());
+		ASSERT_EQUALS(2, importer.fileSettings.begin()->includePaths.size());
+
+		auto include_path_iterator = importer.fileSettings.begin()->includePaths.begin();
+
+		ASSERT_EQUALS("C:/project/include/", *include_path_iterator++);
+		ASSERT_EQUALS("/tmp/", *include_path_iterator++);
+		ASSERT_EQUALS("CFGDIR=\"/usr/local/share/Cppcheck\";TEST1=1;TEST2=2", importer.fileSettings.begin()->defines);
+	}
 
     void importCppcheckGuiProject() const {
         const char xml[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
